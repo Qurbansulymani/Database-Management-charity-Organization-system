@@ -1,263 +1,192 @@
+<?php
+// login.php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// If user is already logged in, redirect to dashboard
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    header('Location: index.php');
+    exit;
+}
+
+// Handle login form submission
+$error_message = '';
+if ($_POST && isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    
+    // Simple authentication (you can replace this with database authentication)
+    $valid_users = [
+        'admin' => 'admin123',
+        'manager' => 'manager123',
+        'user' => 'user123'
+    ];
+    
+    if (isset($valid_users[$username]) && $valid_users[$username] === $password) {
+        // Login successful
+        $_SESSION['loggedin'] = true;
+        $_SESSION['username'] = $username;
+        $_SESSION['user_role'] = $username; // admin, manager, user
+        
+        // Redirect to intended page or dashboard
+        if (isset($_SESSION['redirect_url'])) {
+            $redirect_url = $_SESSION['redirect_url'];
+            unset($_SESSION['redirect_url']);
+            header('Location: ' . $redirect_url);
+        } else {
+            header('Location: index.php');
+        }
+        exit;
+    } else {
+        $error_message = 'Invalid username or password!';
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charity Management System - Login</title>
-    
+    <title>Login - Charity Foundation System</title>
+   <link href="bootstrap-5.0.2-dist/bootstrap-5.0.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .container {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        width: 400px;
-        backdrop-filter: blur(10px);
-    }
-
-    .logo {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .logo h1 {
-        color: #4a5568;
-        font-size: 28px;
-        margin-bottom: 5px;
-    }
-
-    .logo p {
-        color: #718096;
-        font-size: 14px;
-    }
-
-    h2 {
-        text-align: center;
-        color: #2d3748;
-        margin-bottom: 30px;
-        font-weight: 600;
-    }
-
-    label {
-        font-weight: 600;
-        display: block;
-        margin-top: 15px;
-        color: #4a5568;
-    }
-
-    select,
-    input {
-        width: 100%;
-        padding: 12px;
-        margin-top: 8px;
-        border-radius: 8px;
-        border: 2px solid #e2e8f0;
-        font-size: 14px;
-        transition: all 0.3s ease;
-    }
-
-    select:focus,
-    input:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    button {
-        width: 100%;
-        margin-top: 25px;
-        padding: 12px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 600;
-        transition: transform 0.2s ease;
-    }
-
-    button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .message {
-        margin-top: 15px;
-        text-align: center;
-        font-size: 14px;
-        padding: 10px;
-        border-radius: 6px;
-    }
-
-    .success {
-        background: #c6f6d5;
-        color: #22543d;
-        border: 1px solid #9ae6b4;
-    }
-
-    .error {
-        background: #fed7d7;
-        color: #742a2a;
-        border: 1px solid #feb2b2;
-    }
-
-    .features {
-        margin-top: 25px;
-        text-align: center;
-    }
-
-    .features h3 {
-        color: #4a5568;
-        margin-bottom: 10px;
-    }
-
-    .feature-list {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 15px;
-    }
-
-    .feature-item {
-        text-align: center;
-        padding: 10px;
-    }
-
-    .feature-item i {
-        font-size: 20px;
-        color: #667eea;
-        margin-bottom: 5px;
-    }
-
-    .feature-item span {
-        font-size: 12px;
-        color: #718096;
-    }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .login-body {
+            padding: 40px;
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .demo-accounts {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
     </style>
 </head>
-
 <body>
     <div class="container">
-        <div class="logo">
-            <h1>🤝 CharityMS</h1>
-            <p>Charity Management System</p>
-        </div>
-
-        <h2>Welcome Back</h2>
-
-        <label for="role">Select Role:</label>
-        <select id="role">
-            <option value="admin">Admin</option>
-            <option value="staff">Staff</option>
-            <option value="donor">Donor</option>
-            <option value="beneficiary">Beneficiary</option>
-
-        </select>
-
-        <label for="username">Username:</label>
-        <input type="text" id="username" placeholder="Enter your username">
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter your password">
-
-        <button onclick="login()">Login to Dashboard</button>
-
-        <div id="message" class="message"></div>
-
-        <div class="features">
-            <h3>System Features</h3>
-            <div class="feature-list">
-                <div class="feature-item">
-                    <div>💰</div>
-                    <span>Donations</span>
-                </div>
-                <div class="feature-item">
-                    <div>👥</div>
-                    <span>Beneficiaries</span>
-                </div>
-                <div class="feature-item">
-                    <div>📊</div>
-                    <span>Reports</span>
-                </div>
-                <div class="feature-item">
-                    <div>🏢</div>
-                    <span>Branches</span>
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="login-card">
+                    <div class="login-header">
+                        <i class="fas fa-hands-helping fa-3x mb-3"></i>
+                        <h2>Charity Foundation System</h2>
+                        <p class="mb-0">Please login to continue</p>
+                    </div>
+                    
+                    <div class="login-body">
+                        <?php if ($error_message): ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <?php echo $error_message; ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <form method="POST" id="loginForm">
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" name="username" 
+                                           placeholder="Enter your username" required
+                                           value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" name="password" 
+                                           placeholder="Enter your password" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            
+                            <button type="submit" name="login" class="btn btn-login w-100 text-white">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                        </form>
+                        
+                        <!-- Demo Accounts -->
+                        <div class="demo-accounts">
+                            <h6><i class="fas fa-info-circle"></i> Demo Accounts:</h6>
+                            <div class="row">
+                                <div class="col-12">
+                                    <small><strong>Admin:</strong> admin / admin123</small><br>
+                                    <small><strong>Manager:</strong> manager / manager123</small><br>
+                                    <small><strong>User:</strong> user / user123</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Predefined valid users for simulation
-    const users = {
-        donor: {
-            username: "donor",
-            password: "12345"
-        },
-        staff: {
-            username: "staff",
-            password: "12345"
-        },
-        admin: {
-            username: "admin",
-            password: "admin123"
-        },
-        beneficiary: {
-            username: "beneficiary",
-            password: "12345"
-        }
-    };
-
-    function login() {
-        const role = document.getElementById("role").value;
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value.trim();
-        const message = document.getElementById("message");
-
-        // Validation
-        if (!username || !password) {
-            message.textContent = "Please fill in all fields.";
-            message.className = "message error";
-            return;
-        }
-
-        // Check credentials
-        const validUser = users[role];
-        if (validUser && username === validUser.username && password === validUser.password) {
-            message.textContent = `Login successful! Redirecting to ${role} home page...`;
-            message.className = "message success";
-            setTimeout(() => {
-                window.location.href = "home page.html";
-            }, 1500);
-        } else {
-            message.textContent = "Invalid username or password.";
-            message.className = "message error";
-        }
-    }
-
-    // Enter key support
-    document.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            login();
-        }
-    });
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                input.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+            });
+        });
     </script>
 </body>
-
 </html>
