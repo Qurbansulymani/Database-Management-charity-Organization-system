@@ -52,7 +52,7 @@ Reporting System - Comprehensive analytics and reports
 
 Statistical Dashboards - Real-time KPI monitoring
 
-🛠 Technology Stack
+ Technology Stack
 Frontend
 Bootstrap 5 - Responsive UI framework
 
@@ -91,6 +91,8 @@ charity-foundation-system/
 ├── unauthorized.php       # Access denied page
 ├── .htaccess             # Security configurations
 │
+
+
 ├── Management Modules/
 │   ├── charity_foundations.php
 │   ├── branches.php
@@ -104,11 +106,14 @@ charity-foundation-system/
 │   ├── balance.php
 │   └── reports.php
 │
+
+
+
 └── Assets/
     ├── CSS custom styles
     ├── JavaScript functions
     └── Bootstrap integration
-🗃 Database Schema
+ Database Schema
 Core Tables
 Charity_foundation - Main organizations
 
