@@ -265,11 +265,13 @@ All contributors and testers
  Support and contacts us
 For support and questions:
 
-phone numbers: 0779482169  0729928093 
+phone numbers:+93771550591 ,+93779482169  ,+93729928093 
 
  Email: qurbansulymani@gmail.com
+ omaribilal3@gmail.com
 
- Issues: GitHub:Qurban sulymani
+ Issues: GitHub:Qurban sulymani,
+ Bilal Omari
 
  Discussions: GitHub Discussions
-
+  
